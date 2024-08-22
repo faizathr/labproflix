@@ -42,17 +42,31 @@
 - Deployment:
     - OS: Linux VPS
     - Containerization: Docker
-    - Reverse Proxy: Gunicorn & Nginx
+    - HTTP Gateway Interface: Gunicorn & Nginx
 
 ## Endpoints
 - Backend
-    - /
-    - /admin/
-    - /browse,
-    - /accounts/
-    - /accounts/signup/
-    - /accounts/signup/activation-sent
-    - /activate/:uuid/:token/
+    - Homepage
+        - /
+    - Django Administration
+        - /admin/
+    - Browse Movie
+        - /browse
+    - Login
+        - /accounts/login/
+    - Reset Password Using Email
+        - /accounts/password_reset/
+        - /accounts/password_reset/done/
+        - /accounts/password_reset/confirm/
+        - /accounts/password_reset/complete/
+    - Change Password for Logged-In User
+        - /accounts/password_change/
+        - /accounts/password_change/done/
+    - Sign-Up
+        - /accounts/signup/
+        - /accounts/signup/activation-sent
+    - Email Activation
+        - /activate/:uuid/:token/
 - API
     - /
     - /films
@@ -69,7 +83,7 @@
 
 ### B02 - Deployment
 - Backend: https://labproflix.faizath.com
-- API: https://api.labproflix.faizath.com
+- API: https://api-labproflix.faizath.com
 
 ### B03 - Polling
 Menggunakan short polling tiap 1 menit pada fe/ browse.html
@@ -80,6 +94,12 @@ movieListPoll = setInterval(listMovie, 1 * 60 * 1000);
 ### B04 - Caching
 Menggunakan caching server Redis
 
+#### Accessing Movie Data from Database (8.17 s)
+![](https://raw.githubusercontent.com/faizathr/labproflix/master/screenshots/Screenshot%202024-08-22%20203446.png)
+
+#### Accessing Movie Data from Cache (54.44 ms)
+![](https://raw.githubusercontent.com/faizathr/labproflix/master/screenshots/Screenshot%202024-08-22%20203418.png)
+
 ### B10 - Fitur Tambahan
 - Email confirmation pada saat registration
 - Change password
@@ -87,6 +107,29 @@ Menggunakan caching server Redis
 
 ### B11 - Ember
 Menggunakan Cloudflare R2
+
+## Screenshots
+
+### Homepage
+![](https://raw.githubusercontent.com/faizathr/labproflix/master/screenshots/Screenshot%202024-08-22%20203110.png)
+
+### Sign In
+![](https://raw.githubusercontent.com/faizathr/labproflix/master/screenshots/Screenshot%202024-08-22%20203128.png)
+
+### Browse Movie
+![](https://raw.githubusercontent.com/faizathr/labproflix/master/screenshots/Screenshot%202024-08-22%20203213.png)
+
+### Available Movies
+![](https://raw.githubusercontent.com/faizathr/labproflix/master/screenshots/Screenshot%202024-08-22%20203225.png)
+
+### Bought Movies
+![](https://raw.githubusercontent.com/faizathr/labproflix/master/screenshots/Screenshot%202024-08-22%20203237.png)
+
+### Buy Available Movie
+![](https://raw.githubusercontent.com/faizathr/labproflix/master/screenshots/Screenshot%202024-08-22%20203248.png)
+
+### Watch Movie
+![](https://raw.githubusercontent.com/faizathr/labproflix/master/screenshots/Screenshot%202024-08-22%20203323.png)
 
 ## Author
 - Muhammad Faiz Atharrahman

@@ -139,21 +139,6 @@ def browse(request):
         <button form="logout" type="submit" class=" h-8 lg:h-10 text-white px-4 bg-[rgb(229,9,20)] rounded-md hover:bg-red-700 font-bold hover:duration-500">Log out</button>
         '''
         if main_video_data["id"] in json.loads(request.user.bought_movies):
-            main_video_button = ""
-            '''<button id='main-video-play-button' class="bg-white rounded-md py-1 px-2 md:py-2 md:px-4 w-auto text-xs lg:text-lg font-semibold flex flex-row items-center hover:bg-neutral-300 transition">
-                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="24" width="24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"></path>
-                </svg>
-                Play
-            </button>
-
-            <button id='main-video-buy-button' class="hidden bg-white rounded-md py-1 px-2 md:py-2 md:px-4 w-auto text-xs lg:text-lg font-semibold flex flex-row items-center hover:bg-neutral-300 transition">
-                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="1 -5 30 30">
-                    <path fill="currentColor" d="M0 1h4.764l.545 2h18.078l-3.666 11H7.78l-.5 2H22v2H4.72l1.246-4.989L3.236 3H0V1Zm7.764 11h10.515l2.334-7H5.855l1.909 7ZM4 21a2 2 0 1 1 4 0a2 2 0 0 1-4 0Zm14 0a2 2 0 1 1 4 0a2 2 0 0 1-4 0Z"/>
-                </svg>
-                Buy
-            </button>
-            '''
             popup_video_button = '''<button id='popup-video-play-button' class="bg-white rounded-md py-1 px-2 md:py-2 md:px-4 w-auto text-xs lg:text-lg font-semibold flex flex-row items-center hover:bg-neutral-300 transition">
                 <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="24" width="24" xmlns="http://www.w3.org/2000/svg">
                     <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"></path>
@@ -169,22 +154,6 @@ def browse(request):
             </button>
             '''
         else:
-            main_video_button = ""
-            '''
-            <button id='main-video-buy-button' class="bg-white rounded-md py-1 px-2 md:py-2 md:px-4 w-auto text-xs lg:text-lg font-semibold flex flex-row items-center hover:bg-neutral-300 transition">
-                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="1 -5 30 30">
-                    <path fill="currentColor" d="M0 1h4.764l.545 2h18.078l-3.666 11H7.78l-.5 2H22v2H4.72l1.246-4.989L3.236 3H0V1Zm7.764 11h10.515l2.334-7H5.855l1.909 7ZM4 21a2 2 0 1 1 4 0a2 2 0 0 1-4 0Zm14 0a2 2 0 1 1 4 0a2 2 0 0 1-4 0Z"/>
-                </svg>
-                Buy
-            </button>
-
-            <button id='main-video-play-button' class="hidden bg-white rounded-md py-1 px-2 md:py-2 md:px-4 w-auto text-xs lg:text-lg font-semibold flex flex-row items-center hover:bg-neutral-300 transition">
-                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="24" width="24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"></path>
-                </svg>
-                Play
-            </button>
-            '''
             popup_video_button = '''
             <button id='popup-video-buy-button' class="bg-white rounded-md py-1 px-2 md:py-2 md:px-4 w-auto text-xs lg:text-lg font-semibold flex flex-row items-center hover:bg-neutral-300 transition">
                 <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="1 -5 30 30">
@@ -204,17 +173,22 @@ def browse(request):
         signin_account_button = '''<button form="login" type="submit" class=" h-8 lg:h-10 text-white px-4 bg-[rgb(229,9,20)] rounded-md hover:bg-red-700 font-bold hover:duration-500">
             Sign In
           </button>'''
-        main_video_button = '''
+        popup_video_button = '''
           <button form="login" type="submit" class="bg-white rounded-md py-1 px-2 md:py-2 md:px-4 w-auto text-xs lg:text-lg font-semibold flex flex-row items-center hover:bg-neutral-300 transition">
               <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="1 -5 30 30">
                   <path fill="currentColor" d="M0 1h4.764l.545 2h18.078l-3.666 11H7.78l-.5 2H22v2H4.72l1.246-4.989L3.236 3H0V1Zm7.764 11h10.515l2.334-7H5.855l1.909 7ZM4 21a2 2 0 1 1 4 0a2 2 0 0 1-4 0Zm14 0a2 2 0 1 1 4 0a2 2 0 0 1-4 0Z"/>
               </svg>
               Buy
           </button>
+
+            <button id='popup-video-play-button' class="hidden bg-white rounded-md py-1 px-2 md:py-2 md:px-4 w-auto text-xs lg:text-lg font-semibold flex flex-row items-center hover:bg-neutral-300 transition">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16" height="24" width="24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"></path>
+                </svg>
+                Play
+            </button>
         '''
-        popup_video_button = main_video_button
     return render(request,("browse.html"), {
-        "main_video_button": main_video_button,
         "popup_video_button": popup_video_button,
         "signin_account_button": signin_account_button,
         "main_video_data": main_video_data
