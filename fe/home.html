@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Labproflix{% endblock %}
+{% block content %}
+{% if user.is_authenticated %}
+<meta http-equiv="refresh" content="0; url={% url 'browse' %}" />
+{% else %}
+<div id="background-image" class="w-full h-auto md:h-[120vh] 2xl:h-[60vh] bg-cover py-9">
+  <div class="w-full flex items-center justify-between 2xl:px-72 xl:px-32 px-5">
+      <div>
+        <a href="#">
+          <img class="w-20 h-6 lg:w-36 lg:h-10" src="{% static 'labproflix.png' %}" alt="Labproflix">
+        </a>
+      </div>
+      <div class="flex gap-3 items-center justify-center">
+          <form action="{% url 'login' %}">
+            <button type="submit" class=" h-8 lg:h-10 text-white px-4 bg-[rgb(229,9,20)] rounded-md hover:bg-red-700 font-bold hover:duration-500">Sign In</button>
+          </form>
+      </div>
+  </div>
+  <div class="flex items-center justify-center flex-col mx-5 mt-16 md:mt-48 ">  
+      <h1 class="text-white md:text-5xl text-3xl text-center font-extrabold md:font-black ">Movies on demand. Anytime, anywhere.</h1>
+      <h2 class="text-white font-semibold lg:text-2xl md:tracking-wider text-lg text-center my-5">Explore thousands of titles. Find your next favorite.</h2>
+      <h2 class="text-white font-semibold lg:text-xl md:tracking-wide text-lg text-center">No more waiting. Instant access to movies.</h2>
+  </div>
+  <div class="flex items-center justify-center flex-col md:flex-row mt-6 gap-4">
+      <button form="explore" type="submit" class="text-white bg-[rgb(229,9,20)] rounded-md hover:bg-red-700 hover:duration-500 font-bold md:h-16 md:w-1/6 md:text-xl h-12 w-[43%] text-lg 2xl:w-[6.6666%]">Explore<i class="ri-arrow-right-s-line text-white text-xl md:text-2xl inline-block"></i></button>
+      <button form="getstarted" type="submit" class="text-white bg-[rgb(229,9,20)] rounded-md hover:bg-red-700 hover:duration-500 font-bold md:h-16 md:w-1/6 md:text-xl h-12 w-[43%] text-lg 2xl:w-[6.6666%]">Get Started<i class="ri-arrow-right-s-line text-white text-xl md:text-2xl inline-block"></i></button>
+  </div>
+</div>
+<form id="explore" action="{% url 'browse' %}" style="display:none;" method="GET"></form>
+<form id="getstarted" action="{% url 'signup' %}" style="display:none;" method="GET"></form>
+{% endif %}
+{% endblock %}
