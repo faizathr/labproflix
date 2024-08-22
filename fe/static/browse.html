@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Explore{% endblock %}
+{% block content %}
+<div class="absolute z-30 w-full py-9">
+  <div class="w-full flex items-center justify-between 2xl:px-72 xl:px-32 px-5">
+      <div>
+        <a href="{% url 'home' %}">
+          <img class="w-20 h-6 lg:w-36 lg:h-10" src="{% static 'labproflix.png' %}" alt="Labproflix">
+        </a>
+      </div>
+      <div class="flex gap-3 items-center justify-center">
+          {% if user.is_authenticated %}
+          <button disabled class=" h-8 lg:h-10 text-white px-4 bg-[rgb(229,9,20)] rounded-md hover:bg-red-700 font-bold hover:duration-500">🪙 {{ user.balance }}</button>
+          {% endif %}
+          {% autoescape off %}
+            {{ signin_account_button }}
+          {% endautoescape %}
+      </div>
+  </div>
+</div>
+{% if user.is_authenticated %}
+<form id="changepassword" action="{% url 'password_change' %}" style="display:none;" method="GET"></form>
+<form id="logout" action="{% url 'logout' %}" method="post">{% csrf_token %}</form>
+{% else %}
+<form id="login" action="{% url 'login' %}" style="display:none;" method="GET"></form>
+{% endif %}
+<div id="popup-container" class="hidden z-50 transition duration-300 bg-black bg-opacity-80 flex justify-center items-center overflow-x-hidden overflow-y-auto fixed inset-0">
+  <div class="relative w-auto mx-auto max-w-3xl rounded-md overflow-hidden">
+      <div class="scale-300 transform duration-300 relative flex-auto bg-zinc-900 drop-shadow-md">
+          <div class="relative h-96">
+              <video id="video-player" src="{% static 'video.mp4' %}" class="h-full w-full brightness-[60%] object-cover" 
+                poster="{{ main_video_data.cover_image_url }}">
+              </video>
+              <div id="close-popup-button" class="cursor-pointer absolute top-3 right-3 h-10 w-10 rounded-full bg-black bg-opacity-70 flex items-center justify-center">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024" class="text-white" height="24" width="24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M563.8 512l262.5-312.9c4.4-5.2.7-13.1-6.1-13.1h-79.8c-4.7 0-9.2 2.1-12.3 5.7L511.6 449.8 295.1 191.7c-3-3.6-7.5-5.7-12.3-5.7H203c-6.8 0-10.5 7.9-6.1 13.1L459.4 512 196.9 824.9A7.95 7.95 0 0 0 203 838h79.8c4.7 0 9.2-2.1 12.3-5.7l216.5-258.1 216.5 258.1c3 3.6 7.5 5.7 12.3 5.7h79.8c6.8 0 10.5-7.9 6.1-13.1L563.8 512z"></path>
+                </svg>
+              </div>
+              <div class="absolute bottom-[10%] left-10">
+                  <p id="popup-movie-title" class="text-white text-3xl md:text-4xl h-full lg:text-5xl font-bold mb-8">
+                      {{ main_video_data.title }}
+                  </p>
+                
+                  <div class="flex flex-row gap-4 items-center">
+                      {% autoescape off %}
+                        {{ main_video_button }}
+                      {% endautoescape %}
+                      <!--
+                      <div class="cursor-pointer group/item w-6 h-6 lg:w-10 lg:h-10 border-white border-2 rounded-full flex justify-center items-center transition hover:border-neutral-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" class="text-white group-hover/item:text-neutral-300 w-4 lg:w-6">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"></path>
+                        </svg>
+                      </div>
+                    -->
+                  </div>
+              </div>
+          </div>
+          <div class="px-12 py-8">
+              <p class="text-green-400 text-lg font-semibold mt-4"><span id="popup-movie-release-year">{{ main_video_data.release_year }}</span></p>
+              <p class="text-white text-lg">🪙 <span id="popup-movie-price">{{ main_video_data.price }}</span></p>
+              <p class="text-white text-lg">Director: <span id="popup-movie-director">{{ main_video_data.director }}</span></p>
+              <p class="text-white text-lg"><span id="popup-movie-duration">{{ main_video_data.duration }}</span> • <span id="popup-movie-genres">{{ main_video_data.genres }}</span></p>
+              <p class="text-white text-lg"><span id="popup-movie-description">{{ main_video_data.description }}</span></p>
+          </div>
+      </div>
+  </div>
+</div>
+<div class="relative h-[56.25vw]">
+  <!--
+  <div class="absolute w-full z-0 h-[56.25vw] object-cover"></div>
+      <iframe class="absolute w-full -z-10 h-[56.25vw] object-cover brightness-[60%] transition" frameborder="0" scrolling="no" 
+        src="https://www.youtube-nocookie.com/embed/{{ main_video_data.yt_id }}?wmode=transparent&iv_load_policy=3&autoplay=1&html5=1&showinfo=0&rel=0&modestbranding=1&playsinline=0&theme=dark&loop=1&mute=1&fs=0&playlist={{ main_video_data.yt_id }}">
+      </iframe>
+  -->
+  <div>
+      <div class="absolute w-full z-0 h-[56.25vw] object-cover"></div>
+      <video class="absolute w-full h-[56.25vw] object-cover brightness-[60%] transition" muted autoplay loop 
+        src="{{ main_video_data.youtube_url }}">
+      </video>
+  </div>
+  <div class="absolute z-10 top-[30%] mt:top-[40%] ml-4 md:ml-16">
+      <p class="text-white text-1xl md:text-5xl h-full w-[50%] lg:text-6xl font-bold drop-shadow-xl">{{ main_video_data.title }}</p>
+      <p class="text-white text-[8px] md:text-lg mt-3 md:mt-8 w-[90%] md:w-[80%] lg:w-[50%] drop-shadow-xl">{{ main_video_data.description }}</p>
+      <div class="flex flex-row items-center mt-3 md:mt-4 gap-3">
+          {% autoescape off %}
+            {{ main_video_button }}
+          {% endautoescape %}
+          <button id="main-video-info-button" class="bg-white text-white bg-opacity-30 rounded-md py-1 md:py-2 px-2 md:px-4 text-xs w-auto lg:text-lg font-semibold flex flex-row items-center hover:bg-opacity-20 transition">
+              <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024" class="mr-2" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z"></path>
+                  <path d="M464 336a48 48 0 1 0 96 0 48 48 0 1 0-96 0zm72 112h-48c-4.4 0-8 3.6-8 8v272c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V456c0-4.4-3.6-8-8-8z"></path>
+              </svg>
+              More info
+          </button>
+      </div>
+  </div>
+</div>
+<div class="max-w-2xl mx-auto py-8 px-4 sm:px-6 lg:max-w-7xl lg:px-8">
+  <h2 class="text-2xl font-extrabold tracking-tight text-white">Available movies</h2>
+  <div id="available-movies" class="mt-6 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+            
+  </div>
+</div>
+<div class="max-w-2xl mx-auto py-8 px-4 sm:px-6 lg:max-w-7xl lg:px-8">
+  <h2 class="text-2xl font-extrabold tracking-tight text-white">Bought movies</h2>
+  <div id="bought-movies" class="mt-6 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+    
+  </div>
+  </div>
+</div>
+
+<p class="text-green-400 text-lg font-semibold mt-4"><span id="popup-movie-release-year">{{ main_video_data.release_year }}</span></p>
+<p class="text-white text-lg">🪙 <span id="popup-movie-price">{{ main_video_data.price }}</span></p>
+<p class="text-white text-lg">Director: <span id="popup-movie-director">{{ main_video_data.director }}</span></p>
+<p class="text-white text-lg"><span id="popup-movie-duration">{{ main_video_data.duration }}</span> • <span id="popup-movie-genres">{{ main_video_data.genres }}</span></p>
+<p class="text-white text-lg"><span id="popup-movie-description">{{ main_video_data.description }}</span></p>
+
+<script>
+  const apiHost = "http://api.labpro.local:8000";
+  q("#main-video-info-button").onclick = () => {
+      q("#popup-container").classList.remove("hidden");
+  }
+  q("#close-popup-button").onclick = () => {
+      q("#popup-container").classList.add("hidden");
+  }
+  function openPopup(movieData) {
+      var movieDataObj = JSON.parse(movieData);
+      q("#video-player").setAttribute("poster", movieDataObj.cover_image_url);
+      q("#popup-movie-title").innerText = movieDataObj.title;
+      q("#popup-movie-release-year").innerText = movieDataObj.release_year;
+      q("#popup-movie-price").innerText = movieDataObj.price;
+      q("#popup-movie-director").innerText = movieDataObj.director;
+      q("#popup-movie-duration").innerText = new Date(movieDataObj.duration * 1000).toISOString().slice(11, 19);
+      q("#popup-movie-genres").innerText = movieDataObj.genre.join(", ");
+      q("#popup-movie-description").innerText = movieDataObj.description;
+      q("#popup-container").classList.remove("hidden");
+  }
+  function movieCard(movieTitle, movieReleaseYear, moviePrice, movieGenres, movieCoverImageURL, movieData) {
+    return `<div class="group relative cursor-pointer" onclick="openPopup(this.dataset.movie)" data-movie='${movieData}'>
+          <div class="w-full min-h-80 bg-gray-200 aspect-w-1 aspect-h-1 rounded-md overflow-hidden group-hover:opacity-75 lg:h-80 lg:aspect-none">
+              <img src="${movieCoverImageURL}" class="w-full h-full object-center object-cover lg:w-full lg:h-full">
+          </div>
+          <div class="mt-4 flex justify-between">
+              <div>
+              <h3 class="text-xl text-white font-extrabold">
+                  <span aria-hidden="true" class="absolute inset-0"></span>
+                  ${movieTitle} (${movieReleaseYear})
+              </h3>
+              <p class="mt-1 text-sm text-white">${movieGenres}</p>
+              </div>
+              <p class="text-sm font-medium text-white">🪙 ${moviePrice}</p>
+          </div>
+      </div>`;
+  }
+  var fetchMovie = (boughtMovies) => fetch(apiHost + "/films").then(fetchdata => fetchdata.json()).then(filmsdata => {
+      if (filmsdata["message"] == "Unauthorized") window.location.href = "/login";
+      else if (filmsdata["status"] == "success") {
+        if (boughtMovies.length > 0) {
+          q("#available-movies").innerHTML = "";
+          q("#bought-movies").innerHTML = "";
+          for (i in filmsdata["data"]) {
+            var currentMovieData = filmsdata["data"][i];
+            if (boughtMovies.indexOf(currentMovieData.id) > -1) q("#bought-movies").innerHTML += movieCard(currentMovieData.title, currentMovieData.release_year, currentMovieData.price, currentMovieData.genre.join(", "), currentMovieData.cover_image_url, JSON.stringify(currentMovieData));
+            else q("#available-movies").innerHTML += movieCard(currentMovieData.title, currentMovieData.release_year, currentMovieData.price, currentMovieData.genre.join(", "), currentMovieData.cover_image_url, JSON.stringify(currentMovieData));
+          }
+        } else {
+          q("#available-movies").innerHTML = "";
+          for (i in filmsdata["data"]) {
+            var currentMovieData = filmsdata["data"][i];
+            q("#available-movies").innerHTML += movieCard(currentMovieData.title, currentMovieData.release_year, currentMovieData.price, currentMovieData.genre.join(", "), currentMovieData.cover_image_url, JSON.stringify(currentMovieData));
+          }
+        }
+      } else console.error(filmsdata["message"]);
+  });
+  function listMovie() {
+    var userAuthenticated = true;
+    if (userAuthenticated) {
+        fetch(apiHost + "/bought", {
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token")
+          }
+        }).then(fetchdata => fetchdata.json()).then(boughtdata => {
+              if (boughtdata["status"] == "success") fetchMovie(boughtdata["data"]);
+              else if (boughtdata["message"] == "Unauthorized") window.location.href = "/login";
+              else console.error(boughtdata["message"]);
+        });
+    } else fetchMovie();
+  }
+  window.onload = listMovie;
+  movieListPoll = setInterval(listMovie, 5 * 60 * 1000);
+  q("#popup-play-button").onclick = () => {
+    q("#video-player").play();
+  }
+</script>
+{% endblock %}

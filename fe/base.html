@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>{% block title %}Labproflix{% endblock %}</title>
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet"> 
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+      <link rel="stylesheet" href="{% static 'style.css' %}">
+      <style>
+        #background-image {
+          position: relative;
+          z-index:1;
+          overflow:hidden;
+        }
+        
+        #background-image:before{
+          z-index:-1;
+          position:absolute;
+          left:0;
+          top:0;
+          content: url('{% static "background.jpg" %}');
+          opacity:0.4;
+        }
+      </style>
+      <script src="{% static 'script.js' %}"></script>
+  </head>
+  <body class="w-full h-full bg-black">
+      {% block content %}
+      {% endblock %}
+      <div class="w-full h-auto pb-24 mt-16 text-[#9F9F9F] bg-black flex flex-col md:flex-row items-center justify-center gap-10">
+          <div class="flex flex-col md:flex-row items-center justify-around w-full">
+              <div class="flex flex-col gap-2 items-center md:items-start mt-14 md:-mt-11">
+                  <h3 class="mb-20 text-right">Questions? Email <a  href="mailto:labproflix@faizath.com"><span class="cursor-pointer">labproflix@faizath.com</span></a></h3>
+                  <h3 class="underline cursor-pointer">FAQ</h3>
+                  <h3 class="underline cursor-pointer">Investor Relations</h3>
+                  <h3 class="underline cursor-pointer">Ways to Watch</h3>
+                  <h3 class="underline cursor-pointer">Corporate Information</h3>
+                  <h3 class="underline cursor-pointer">Only on Netflix</h3>
+                  <button class="hidden md:inline-block bg-black border h-10 focus:border-white focus:border-2 border-gray-700 px-4 rounded-md  cursor-pointer">
+                      <i class="ri-global-line text-[#7F7F7F] text-lg"></i>
+                      <span class=" text-[#7F7F7F] font-medium">English</span>
+                      <i class="ri-arrow-down-s-fill text-[#7F7F7F] text-xl"></i>
+                  </button>
+                  <h3 class=" hidden md:inline-block mt-2 text-[#7F7F7F]">Labproflix</h3>
+              </div>
+              <div class="flex flex-col gap-2 items-center md:items-start mt-10 md:-mt-10 underline ">
+                  <h3 class="cursor-pointer">Help Centre</h3>
+                  <h3 class="cursor-pointer">Jobs</h3>
+                  <h3 class="cursor-pointer">Terms of Use</h3>
+                  <h3 class="cursor-pointer">Contact Us</h3>
+              </div>
+              <div class="flex flex-col gap-2 items-center md:items-start mt-10 md:-mt-10 underline ">
+                  <h3 class="cursor-pointer">Account</h3>
+                  <h3 class="cursor-pointer">Redeem Gift Cards</h3>
+                  <h3 class="cursor-pointer">Privacy</h3>
+                  <h3 class="cursor-pointer">Speed Test</h3>
+              </div>
+              <div class="flex flex-col gap-2 items-center md:items-start justify-center mt-10 md:-mt-10">
+                  <h3 class="underline cursor-pointer">Media Center</h3>
+                  <h3 class="underline cursor-pointer">Buy Gift Cards</h3>
+                  <h3 class="underline cursor-pointer">Cookie Preferences</h3>
+                  <h3 class="underline cursor-pointer">Legal Notices</h3>
+              </div>
+          </div> 
+      </div>
+  </body>
+  </html>
