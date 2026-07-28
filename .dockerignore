@@ -1,0 +1,21 @@
+.git
+.gitignore
+.omc
+
+# Never bake real credentials into an image layer
+.env
+
+# Host virtualenv: the image builds its own via uv sync
+.venv
+labprovenv
+
+__pycache__
+*.py[cod]
+*.egg-info
+
+# collectstatic output is regenerated at container start
+fe/static/admin
+
+screenshots
+README.md
+top_10_movies.sql
