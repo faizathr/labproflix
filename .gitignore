@@ -72,6 +72,8 @@ cover/
 *.mo
 
 # Django stuff:
+# collectstatic output: django.contrib.admin ships its own assets
+fe/static/admin/
 
 # Flask stuff:
 instance/
