@@ -5,7 +5,7 @@
 - git clone https://github.com/faizathr/labproflix.git
 - cd labproflix
 - Install [uv](https://docs.astral.sh/uv/getting-started/installation/)
-- Fill .env Environment Variables
+- cp .env.example .env and fill in the environment variables
 - uv sync
 - Point labpro.local to 127.0.0.1 (localhost) and makesure it's wildcard (*.labpro.local)
     - /etc/hosts

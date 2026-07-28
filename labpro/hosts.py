@@ -1,13 +1,23 @@
+from django.conf import settings
 from django.http import HttpResponse
 
-virtual_hosts = {
-    "api.labpro.local:8000": "api.urls",
-    "labpro.local:8000": "be.urls",
-    "api.labpro.local": "api.urls",
-    "labpro.local": "be.urls",
-    "localhost:8000": "api.urls",
-    "localhost": "api.urls",
-}
+
+def _build_virtual_hosts():
+    """Map each configured hostname to its urlconf, with and without a port."""
+    hosts = {}
+    for urlconf, names in (
+        ("be.urls", settings.BACKEND_HOSTS),
+        ("api.urls", settings.API_HOSTS),
+    ):
+        for name in names:
+            hosts[name] = urlconf
+            if ":" not in name:
+                for port in settings.VIRTUAL_HOST_PORTS:
+                    hosts["{}:{}".format(name, port)] = urlconf
+    return hosts
+
+
+virtual_hosts = _build_virtual_hosts()
 
 
 class VirtualHostMiddleware:

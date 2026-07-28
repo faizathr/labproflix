@@ -15,6 +15,31 @@ from dotenv import load_dotenv
 import os
 load_dotenv()
 
+
+def env_str(name, default=None):
+    value = os.getenv(name)
+    return value if value not in (None, "") else default
+
+
+def env_bool(name, default=False):
+    value = env_str(name)
+    if value is None:
+        return default
+    return value.strip().lower() in ("1", "true", "yes", "on")
+
+
+def env_int(name, default):
+    value = env_str(name)
+    return int(value) if value is not None else default
+
+
+def env_list(name, default=None):
+    value = env_str(name)
+    if value is None:
+        return list(default or [])
+    return [item.strip() for item in value.split(",") if item.strip()]
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -22,32 +47,37 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = env_str("SECRET_KEY")
 
 # JWT
-ACCESS_TOKEN_SECRET = os.getenv("ACCESS_TOKEN_SECRET")
-JWT_ALGORITHM = os.getenv("JWT_ALGORITHM") or 'HS256'
+ACCESS_TOKEN_SECRET = env_str("ACCESS_TOKEN_SECRET")
+JWT_ALGORITHM = env_str("JWT_ALGORITHM", "HS256")
 
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = env_str("LOGIN_REDIRECT_URL", "/")
+LOGOUT_REDIRECT_URL = env_str("LOGOUT_REDIRECT_URL", "/")
 
 # Email
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-'''
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_BACKEND = env_str("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
+EMAIL_HOST = env_str("EMAIL_HOST")
+EMAIL_PORT = env_int("EMAIL_PORT", 25)
+EMAIL_USE_SSL = env_bool("EMAIL_USE_SSL")
+EMAIL_HOST_USER = env_str("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = env_str("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL = env_str("DEFAULT_FROM_EMAIL", "webmaster@localhost")
 
-EMAIL_HOST = os.getenv("EMAIL_HOST")
-EMAIL_PORT = os.getenv("EMAIL_PORT")
-EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL")
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
-DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
-'''
+# Trailer lookup service used by the browse page
+INVIDIOUS_API_URL = env_str("INVIDIOUS_API_URL", "https://inv.altsite.org").rstrip("/")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG") or True
+DEBUG = env_bool("DEBUG")
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = env_list("ALLOWED_HOSTS", ["*"])
+CSRF_TRUSTED_ORIGINS = env_list("CSRF_TRUSTED_ORIGINS")
+
+# Virtual host routing (see labpro/hosts.py)
+BACKEND_HOSTS = env_list("BACKEND_HOSTS", ["labpro.local"])
+API_HOSTS = env_list("API_HOSTS", ["api.labpro.local", "localhost"])
+VIRTUAL_HOST_PORTS = env_list("VIRTUAL_HOST_PORTS", ["8000"])
 
 
 # Application definition
@@ -102,26 +132,27 @@ WSGI_APPLICATION = 'labpro.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv("DATABASES_NAME"),
-        'USER': os.getenv("DATABASES_USER"),
-        'PASSWORD': os.getenv("DATABASES_PASSWORD"),
-        'HOST': os.getenv("DATABASES_HOST"),
-        'PORT': os.getenv("DATABASES_PORT"),
+        'ENGINE': env_str("DATABASES_ENGINE", "django.db.backends.postgresql"),
+        'NAME': env_str("DATABASES_NAME"),
+        'USER': env_str("DATABASES_USER"),
+        'PASSWORD': env_str("DATABASES_PASSWORD"),
+        'HOST': env_str("DATABASES_HOST"),
+        'PORT': env_str("DATABASES_PORT"),
     }
 }
 
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": os.getenv("REDIS_URL") or "redis://localhost:6379/",
+        "LOCATION": env_str("REDIS_URL", "redis://localhost:6379/"),
     }
 }
-CACHE_DEFAULT_TIMEOUT = 2700
+CACHE_DEFAULT_TIMEOUT = env_int("CACHE_DEFAULT_TIMEOUT", 2700)
 
-CLOUDFLARE_R2_BUCKET=os.getenv("CLOUDFLARE_R2_BUCKET")
-CLOUDFLARE_R2_BUCKET_ENDPOINT=os.getenv("CLOUDFLARE_R2_BUCKET_ENDPOINT")
-CLOUDFLARE_R2_ACCESS_KEY=os.getenv("CLOUDFLARE_R2_ACCESS_KEY")
-CLOUDFLARE_R2_SECRET_KEY=os.getenv("CLOUDFLARE_R2_SECRET_KEY")
+CLOUDFLARE_R2_BUCKET=env_str("CLOUDFLARE_R2_BUCKET")
+CLOUDFLARE_R2_BUCKET_ENDPOINT=env_str("CLOUDFLARE_R2_BUCKET_ENDPOINT")
+CLOUDFLARE_R2_ACCESS_KEY=env_str("CLOUDFLARE_R2_ACCESS_KEY")
+CLOUDFLARE_R2_SECRET_KEY=env_str("CLOUDFLARE_R2_SECRET_KEY")
 
 CLOUDFLARE_R2_CONFIG_OPTIONS = {
     "bucket_name": CLOUDFLARE_R2_BUCKET,
@@ -184,9 +215,9 @@ PASSWORD_HASHERS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = env_str("LANGUAGE_CODE", "en-us")
 
-TIME_ZONE = os.getenv("TIME_ZONE")
+TIME_ZONE = env_str("TIME_ZONE", "UTC")
 
 USE_I18N = True
 

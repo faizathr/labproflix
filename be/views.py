@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import login
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.cache import cache
@@ -103,7 +104,8 @@ def browse(request):
             if main_video_yt_id_cache and main_video_yt_id_cache != "":
                 main_video_yt_id = main_video_yt_id_cache
             else:
-                main_video_yt_id = json.loads(requests.get("https://inv.altsite.org/api/v1/search?q={}+({})+trailer".format(
+                main_video_yt_id = json.loads(requests.get("{}/api/v1/search?q={}+({})+trailer".format(
+                    settings.INVIDIOUS_API_URL,
                     main_video_title,
                     main_video_release_year
                 )).text)[0]["videoId"]
@@ -113,7 +115,7 @@ def browse(request):
             if main_video_youtube_url_cache and main_video_youtube_url_cache != "":
                 main_video_youtube_url = main_video_youtube_url_cache
             else:
-                main_video_youtube_url = json.loads(requests.get("https://inv.altsite.org/api/v1/videos/" + main_video_yt_id).text)["formatStreams"][0]["url"]
+                main_video_youtube_url = json.loads(requests.get(settings.INVIDIOUS_API_URL + "/api/v1/videos/" + main_video_yt_id).text)["formatStreams"][0]["url"]
                 cache.set("yt-url:{}".format(main_video_id), main_video_youtube_url, 4 * 3600)
             
             main_video_data = {
