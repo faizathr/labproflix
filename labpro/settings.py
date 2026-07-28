@@ -153,6 +153,9 @@ CLOUDFLARE_R2_BUCKET=env_str("CLOUDFLARE_R2_BUCKET")
 CLOUDFLARE_R2_BUCKET_ENDPOINT=env_str("CLOUDFLARE_R2_BUCKET_ENDPOINT")
 CLOUDFLARE_R2_ACCESS_KEY=env_str("CLOUDFLARE_R2_ACCESS_KEY")
 CLOUDFLARE_R2_SECRET_KEY=env_str("CLOUDFLARE_R2_SECRET_KEY")
+# Public hostname serving the bucket (no scheme, no trailing slash).
+# Object URLs are built from this instead of the default *.r2.dev endpoint.
+CLOUDFLARE_R2_CUSTOM_DOMAIN=env_str("CLOUDFLARE_R2_CUSTOM_DOMAIN", "labproflix-cdn.faizath.com")
 
 CLOUDFLARE_R2_CONFIG_OPTIONS = {
     "bucket_name": CLOUDFLARE_R2_BUCKET,
@@ -161,6 +164,9 @@ CLOUDFLARE_R2_CONFIG_OPTIONS = {
     "endpoint_url": CLOUDFLARE_R2_BUCKET_ENDPOINT,
     "access_key": CLOUDFLARE_R2_ACCESS_KEY,
     "secret_key": CLOUDFLARE_R2_SECRET_KEY,
+    "custom_domain": CLOUDFLARE_R2_CUSTOM_DOMAIN,
+    "url_protocol": "https:",
+    "querystring_auth": False,
 }
 
 STORAGES = {
