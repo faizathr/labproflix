@@ -65,9 +65,6 @@ EMAIL_HOST_USER = env_str("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = env_str("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = env_str("DEFAULT_FROM_EMAIL", "webmaster@localhost")
 
-# Trailer lookup service used by the browse page
-INVIDIOUS_API_URL = env_str("INVIDIOUS_API_URL", "https://inv.altsite.org").rstrip("/")
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env_bool("DEBUG")
 

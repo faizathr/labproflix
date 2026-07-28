@@ -1,10 +1,10 @@
-from django.conf import settings
 from django.contrib.auth import login
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.cache import cache
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.template.loader import render_to_string
+from django.templatetags.static import static
 from django.urls import reverse
 
 from .forms import RegisterForm
@@ -13,7 +13,6 @@ from .models import Profile, Film
 
 import datetime
 import json
-import requests
 
 def activate(request, uuid, token):
     if JWT.verify_audience(str(uuid), token):
@@ -100,24 +99,6 @@ def browse(request):
             main_video_price = str(main_video[0].price)
             main_video_cover_image_url = main_video[0].cover_image.url
 
-            main_video_yt_id_cache = cache.get("yt-id:{}".format(main_video_id))
-            if main_video_yt_id_cache and main_video_yt_id_cache != "":
-                main_video_yt_id = main_video_yt_id_cache
-            else:
-                main_video_yt_id = json.loads(requests.get("{}/api/v1/search?q={}+({})+trailer".format(
-                    settings.INVIDIOUS_API_URL,
-                    main_video_title,
-                    main_video_release_year
-                )).text)[0]["videoId"]
-                cache.set("yt-id:{}".format(main_video_id), main_video_yt_id, 24 * 3600)
-
-            main_video_youtube_url_cache = cache.get("yt-url:{}".format(main_video_id))
-            if main_video_youtube_url_cache and main_video_youtube_url_cache != "":
-                main_video_youtube_url = main_video_youtube_url_cache
-            else:
-                main_video_youtube_url = json.loads(requests.get(settings.INVIDIOUS_API_URL + "/api/v1/videos/" + main_video_yt_id).text)["formatStreams"][0]["url"]
-                cache.set("yt-url:{}".format(main_video_id), main_video_youtube_url, 4 * 3600)
-            
             main_video_data = {
                 "id": main_video_id,
                 "title": main_video_title,
@@ -128,8 +109,7 @@ def browse(request):
                 "genres": main_video_genres,
                 "duration": main_video_duration,
                 "cover_image_url": main_video_cover_image_url,
-                "yt_id": main_video_yt_id,
-                "youtube_url": main_video_youtube_url
+                "video_url": static("main_video.mp4")
             }
 
             cache.set("main_video_data", json.dumps(main_video_data), 1 * 3600)

@@ -67,16 +67,10 @@
   </div>
 </div>
 <div class="relative h-[56.25vw]">
-  <!--
-  <div class="absolute w-full z-0 h-[56.25vw] object-cover"></div>
-      <iframe class="absolute w-full -z-10 h-[56.25vw] object-cover brightness-[60%] transition" frameborder="0" scrolling="no" 
-        src="https://www.youtube-nocookie.com/embed/{{ main_video_data.yt_id }}?wmode=transparent&iv_load_policy=3&autoplay=1&html5=1&showinfo=0&rel=0&modestbranding=1&playsinline=0&theme=dark&loop=1&mute=1&fs=0&playlist={{ main_video_data.yt_id }}">
-      </iframe>
-  -->
   <div>
       <div class="absolute w-full z-0 h-[56.25vw] object-cover"></div>
-      <video class="absolute w-full h-[56.25vw] object-cover brightness-[60%] transition" muted autoplay loop 
-        src="{{ main_video_data.youtube_url }}">
+      <video class="absolute w-full h-[56.25vw] object-cover brightness-[60%] transition" muted autoplay loop
+        src="{{ main_video_data.video_url }}">
       </video>
   </div>
   <div class="absolute z-10 top-[30%] mt:top-[40%] ml-4 md:ml-16">
