@@ -4,10 +4,9 @@
 ## Installation
 - git clone https://github.com/faizathr/labproflix.git
 - cd labproflix
+- Install [uv](https://docs.astral.sh/uv/getting-started/installation/)
 - Fill .env Environment Variables
-- python -m venv venv
-- source venv/bin/activate or venv/Scripts/activate.bat
-- pip install -r requirements.txt
+- uv sync
 - Point labpro.local to 127.0.0.1 (localhost) and makesure it's wildcard (*.labpro.local)
     - /etc/hosts
         ```
@@ -21,7 +20,7 @@
     - Django Admin Credentials
         - username: admin
         - password: yvd5CC@y^lQ6!iIdV%!2W^ZnpRXhD5L&
-- python manage.py runserver
+- uv run manage.py runserver
 
 ## Design Pattern
 - Facade
@@ -32,6 +31,7 @@
     - data attribute of Data Class (Class to construct REST API output) is constructed with json. To make HttpResponse can output the Data.data, it has to be converted to string first by .get_json() method 
 
 ## Tech Stacks
+- Package Manager: uv
 - Framework: 
     - Backend: Django
     - Frontend: Vanilla html and js with django template engine and CSS generated from Tailwind CSS
