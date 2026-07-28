@@ -95,10 +95,10 @@ movieListPoll = setInterval(listMovie, 1 * 60 * 1000);
 Menggunakan caching server Redis
 
 #### Accessing Movie Data from Database (8.17 s)
-![](https://raw.githubusercontent.com/faizathr/labproflix/master/screenshots/Screenshot%202024-08-22%20203446.png)
+![](screenshots/Screenshot%202024-08-22%20203446.png)
 
 #### Accessing Movie Data from Cache (54.44 ms)
-![](https://raw.githubusercontent.com/faizathr/labproflix/master/screenshots/Screenshot%202024-08-22%20203418.png)
+![](screenshots/Screenshot%202024-08-22%20203418.png)
 
 ### B10 - Fitur Tambahan
 - Email confirmation pada saat registration
@@ -111,25 +111,25 @@ Menggunakan Cloudflare R2
 ## Screenshots
 
 ### Homepage
-![](https://raw.githubusercontent.com/faizathr/labproflix/master/screenshots/Screenshot%202024-08-22%20203110.png)
+![](screenshots/Screenshot%202024-08-22%20203110.png)
 
 ### Sign In
-![](https://raw.githubusercontent.com/faizathr/labproflix/master/screenshots/Screenshot%202024-08-22%20203128.png)
+![](screenshots/Screenshot%202024-08-22%20203128.png)
 
 ### Browse Movie
-![](https://raw.githubusercontent.com/faizathr/labproflix/master/screenshots/Screenshot%202024-08-22%20203213.png)
+![](screenshots/Screenshot%202024-08-22%20203213.png)
 
 ### Available Movies
-![](https://raw.githubusercontent.com/faizathr/labproflix/master/screenshots/Screenshot%202024-08-22%20203225.png)
+![](screenshots/Screenshot%202024-08-22%20203225.png)
 
 ### Bought Movies
-![](https://raw.githubusercontent.com/faizathr/labproflix/master/screenshots/Screenshot%202024-08-22%20203237.png)
+![](screenshots/Screenshot%202024-08-22%20203237.png)
 
 ### Buy Available Movie
-![](https://raw.githubusercontent.com/faizathr/labproflix/master/screenshots/Screenshot%202024-08-22%20203248.png)
+![](screenshots/Screenshot%202024-08-22%20203248.png)
 
 ### Watch Movie
-![](https://raw.githubusercontent.com/faizathr/labproflix/master/screenshots/Screenshot%202024-08-22%20203323.png)
+![](screenshots/Screenshot%202024-08-22%20203323.png)
 
 ## Author
 - Muhammad Faiz Atharrahman
