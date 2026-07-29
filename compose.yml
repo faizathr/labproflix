@@ -1,18 +1,28 @@
-version: '3'
 services:
   database:
-    image: 'postgres:13'
+    image: 'postgres:18.4'
     ports:
       - 5432:5432
     environment:
-      POSTGRES_USER: ${DATABASES_USER}
-      POSTGRES_PASSWORD: ${DATABASES_PASSWORD}
-      POSTGRES_DB: ${DATABASES_NAME}
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: labpro
+      POSTGRES_DB: labpro
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: pg_isready -U admin -d labpro || exit 1
+    restart: always
 
   cache:
-    image: 'redis:7.4.0'
+    image: 'redis:7.4.10'
     ports:
       - 6379:6379
+    volumes:
+      - redis_data:/data
     healthcheck:
       test: redis-cli ping || exit 1
     restart: always
+
+volumes:
+  postgres_data:
+  redis_data:
