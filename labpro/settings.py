@@ -185,8 +185,10 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'fe/static')
 ]
-STATIC_ROOT = os.path.join(BASE_DIR, 'fe/')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# Must stay outside fe/, which is also the template directory: with
+# STATIC_ROOT = fe/, collectstatic copied fe/static/browse.html straight over
+# the fe/browse.html template.
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
