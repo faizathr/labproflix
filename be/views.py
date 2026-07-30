@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import login
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.cache import cache
@@ -13,6 +14,9 @@ from .models import Profile, Film
 
 import datetime
 import json
+import logging
+
+logger = logging.getLogger(__name__)
 
 def activate(request, uuid, token):
     if JWT.verify_audience(str(uuid), token):
@@ -65,7 +69,21 @@ def signup(request):
                 'uuid': str(user_data.id),
                 'token': JWT.sign_audience(str(user_data.id)),
             })
-            user_data.email_user(subject, message)
+            logger.info(
+                "Sending activation email to user %s via %s",
+                user_data.id, settings.EMAIL_BACKEND
+            )
+            try:
+                user_data.email_user(subject, message)
+            except Exception:
+                # Re-raised on purpose: the account exists but is inactive, so
+                # swallowing this would leave the user with no way to activate
+                # and no trace of why.
+                logger.exception(
+                    "Failed to send activation email to user %s", user_data.id
+                )
+                raise
+            logger.info("Sent activation email to user %s", user_data.id)
             return redirect('activation_sent')
         else:
             form = RegisterForm()

@@ -65,6 +65,40 @@ EMAIL_HOST_USER = env_str("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = env_str("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = env_str("DEFAULT_FROM_EMAIL", "webmaster@localhost")
 
+# Logging
+# Django only configures the 'django' logger by default; application loggers
+# fall back to the root logger, which has no handler and therefore drops
+# anything below WARNING. Send both to stderr so gunicorn captures them.
+LOG_LEVEL = env_str("LOG_LEVEL", "INFO").upper()
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "{asctime} {levelname} {name} {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": LOG_LEVEL,
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": LOG_LEVEL,
+            "propagate": False,
+        },
+    },
+}
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env_bool("DEBUG")
 
