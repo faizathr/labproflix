@@ -105,6 +105,16 @@ DEBUG = env_bool("DEBUG")
 ALLOWED_HOSTS = env_list("ALLOWED_HOSTS", ["*"])
 CSRF_TRUSTED_ORIGINS = env_list("CSRF_TRUSTED_ORIGINS")
 
+# Behind a TLS-terminating proxy the connection Django sees is plain HTTP, so
+# request.scheme reports "http" for a page the browser loaded over HTTPS and
+# every derived URL (API_HOST, redirects, password reset links) points at the
+# wrong protocol. Trusting X-Forwarded-Proto fixes that.
+# SECURITY: only enable when a proxy in front of the app always sets this
+# header. If clients can reach the app directly, anyone can forge it and Django
+# will believe an insecure request was secure.
+if env_bool("USE_X_FORWARDED_PROTO"):
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 # Virtual host routing (see labpro/hosts.py)
 BACKEND_HOSTS = env_list("BACKEND_HOSTS", ["labpro.local"])
 API_HOSTS = env_list("API_HOSTS", ["api.labpro.local", "localhost"])
