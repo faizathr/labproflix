@@ -105,6 +105,10 @@ DEBUG = env_bool("DEBUG")
 ALLOWED_HOSTS = env_list("ALLOWED_HOSTS", ["*"])
 CSRF_TRUSTED_ORIGINS = env_list("CSRF_TRUSTED_ORIGINS")
 
+# Browser origins allowed to call the api virtual host (see labpro/hosts.py).
+# Empty means every origin is allowed, which is what this app has always done.
+CORS_ALLOWED_ORIGINS = env_list("CORS_ALLOWED_ORIGINS")
+
 # Behind a TLS-terminating proxy the connection Django sees is plain HTTP, so
 # request.scheme reports "http" for a page the browser loaded over HTTPS and
 # every derived URL (API_HOST, redirects, password reset links) points at the
