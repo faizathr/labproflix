@@ -79,10 +79,24 @@
   </div>
 </div>
 <div class="max-w-2xl mx-auto py-8 px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-  <h2 class="text-2xl font-extrabold tracking-tight text-white">Available movies</h2>
-  <div id="available-movies" class="mt-6 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-            
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <h2 class="text-2xl font-extrabold tracking-tight text-white">Available movies</h2>
+    <div class="relative w-full sm:w-80">
+      <svg class="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" height="20" width="20">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 19a8 8 0 1 1 0-16 8 8 0 0 1 0 16z"></path>
+      </svg>
+      <input id="movie-search" type="search" autocomplete="off" placeholder="Search by title or director" class="block rounded-md w-full pl-12 pr-12 py-3 text-md text-white bg-neutral-700 appearance-none focus:outline-none focus:ring-0" value="">
+      <button id="movie-search-clear" type="button" aria-label="Clear search" class="hidden absolute right-3 top-1/2 -translate-y-1/2 h-7 w-7 rounded-full text-zinc-300 flex items-center justify-center hover:bg-neutral-600 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" height="16" width="16">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
   </div>
+  <div id="available-movies" class="mt-6 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+
+  </div>
+  <p id="no-results" class="hidden mt-6 text-white"></p>
 </div>
 <div id="bought-movies-placeholder" class="max-w-2xl mx-auto py-8 px-4 sm:px-6 lg:max-w-7xl lg:px-8">
   <h2 class="text-2xl font-extrabold tracking-tight text-white">Bought movies</h2>
@@ -219,30 +233,42 @@
           </div>
       </div>`;
   }
-  var fetchMovie = (boughtMovies) => fetch(apiHost + "/films").then(fetchdata => fetchdata.json()).then(filmsdata => {
+  var currentQuery = new URLSearchParams(window.location.search).get("q") || "";
+  // Every list render is tagged with the request that produced it. Debounced
+  // typing leaves several /films calls in flight and they can resolve out of
+  // order, so a slow "?q=inc" must not overwrite the newer "?q=incep".
+  var latestFilmsRequest = 0;
+  var filmsUrl = () => apiHost + "/films" + (currentQuery ? "?q=" + encodeURIComponent(currentQuery) : "");
+  var fetchMovie = (boughtMovies) => {
+    var thisRequest = ++latestFilmsRequest;
+    return fetch(filmsUrl()).then(fetchdata => fetchdata.json()).then(filmsdata => {
+      if (thisRequest != latestFilmsRequest) return;
       if (filmsdata["status"] == "success") {
-        if (boughtMovies && boughtMovies.length > 0) {
-          if ([...q("#bought-movies-placeholder").classList].indexOf("hidden") > -1) q("#bought-movies-placeholder").classList.remove("hidden");
-          q("#available-movies").innerHTML = "";
-          q("#bought-movies").innerHTML = "";
-          for (i in filmsdata["data"]) {
-            var currentMovieData = filmsdata["data"][i];
-            if (boughtMovies.indexOf(currentMovieData.id) > -1) q("#bought-movies").innerHTML += movieCard("true", currentMovieData.title, currentMovieData.release_year, currentMovieData.price, currentMovieData.genre.join(", "), currentMovieData.cover_image_url, btoa(JSON.stringify(currentMovieData)));
-            else q("#available-movies").innerHTML += movieCard("false", currentMovieData.title, currentMovieData.release_year, currentMovieData.price, currentMovieData.genre.join(", "), currentMovieData.cover_image_url, btoa(JSON.stringify(currentMovieData)));
-          }
-        } else {
-          q("#bought-movies-placeholder").classList.add("hidden");
-          q("#available-movies").innerHTML = "";
-          for (i in filmsdata["data"]) {
-            var currentMovieData = filmsdata["data"][i];
-            q("#available-movies").innerHTML += movieCard("false", currentMovieData.title, currentMovieData.release_year, currentMovieData.price, currentMovieData.genre.join(", "), currentMovieData.cover_image_url, btoa(JSON.stringify(currentMovieData)));
-          }
+        var availableCards = "";
+        var boughtCards = "";
+        for (i in filmsdata["data"]) {
+          var currentMovieData = filmsdata["data"][i];
+          var card = movieCard(boughtMovies && boughtMovies.indexOf(currentMovieData.id) > -1 ? "true" : "false", currentMovieData.title, currentMovieData.release_year, currentMovieData.price, currentMovieData.genre.join(", "), currentMovieData.cover_image_url, btoa(JSON.stringify(currentMovieData)));
+          if (boughtMovies && boughtMovies.indexOf(currentMovieData.id) > -1) boughtCards += card;
+          else availableCards += card;
         }
+        q("#available-movies").innerHTML = availableCards;
+        q("#bought-movies").innerHTML = boughtCards;
+        // Driven by what actually rendered, not by how many films the user owns:
+        // a search matching none of them would otherwise leave the "Bought
+        // movies" heading sitting above an empty grid.
+        if (boughtCards) q("#bought-movies-placeholder").classList.remove("hidden");
+        else q("#bought-movies-placeholder").classList.add("hidden");
+        if (filmsdata["data"].length == 0 && currentQuery) {
+          q("#no-results").textContent = 'No movies match "' + currentQuery + '".';
+          q("#no-results").classList.remove("hidden");
+        } else q("#no-results").classList.add("hidden");
       } else {
         toastr.error(filmsdata["message"]);
         console.error(filmsdata["message"]);
       }
-  });
+    });
+  };
   function listMovie() {
     if (userAuthenticated) {
         fetch(apiHost + "/bought", {
@@ -260,6 +286,35 @@
         });
     } else fetchMovie();
   }
+  // Seed the box from ?q= so a reloaded or shared /browse?q=... comes back
+  // filtered with the term still visible.
+  q("#movie-search").value = currentQuery;
+  q("#movie-search-clear").classList.toggle("hidden", !currentQuery);
+  var searchDebounce;
+  function runSearch() {
+    clearTimeout(searchDebounce);
+    currentQuery = q("#movie-search").value.trim();
+    // replaceState, not pushState: one history entry per keystroke pause would
+    // make the back button walk backwards through a half-typed word.
+    history.replaceState(null, "", currentQuery ? "?q=" + encodeURIComponent(currentQuery) : window.location.pathname);
+    listMovie();
+  }
+  q("#movie-search").oninput = () => {
+    q("#movie-search-clear").classList.toggle("hidden", !q("#movie-search").value);
+    clearTimeout(searchDebounce);
+    searchDebounce = setTimeout(runSearch, 350);
+  };
+  q("#movie-search").onkeydown = (e) => {
+    if (e.key == "Enter") {
+      e.preventDefault();
+      runSearch();
+    }
+  };
+  q("#movie-search-clear").onclick = () => {
+    q("#movie-search").value = "";
+    q("#movie-search-clear").classList.add("hidden");
+    runSearch();
+  };
   window.onload = listMovie;
   movieListPoll = setInterval(listMovie, 1 * 60 * 1000);
   q("#logout").onsubmit = (e) => {
